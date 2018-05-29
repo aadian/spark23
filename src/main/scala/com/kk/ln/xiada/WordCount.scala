@@ -9,7 +9,7 @@ object WordCount {
 
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder().master("local").appName("Word Count").getOrCreate()
-    val lines = spark.sparkContext.textFile("E:\\spark\\spark23\\src\\main\\resources\\wordCountText.txt")
+    val lines = spark.sparkContext.textFile("/Develop/projects/spark23/target/classes/wordCountText.txt")
     val wordsMap = scala.collection.mutable.Map[String, Int]()
     wordsMap += ("this" -> 1)
     lines.foreach(line =>
