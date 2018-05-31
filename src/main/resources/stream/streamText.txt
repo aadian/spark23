@@ -1,0 +1,11 @@
+  def main(args: Array[String]): Unit = {
+    val conf = new SparkConf().setMaster("local[2]").setAppName("NetworkWordCount")
+    val ssc = new StreamingContext(conf,Seconds(5))
+
+      def main(args: Array[String]): Unit = {
+        val conf = new SparkConf().setMaster("local[2]").setAppName("NetworkWordCount")
+        val ssc = new StreamingContext(conf,Seconds(5))
+
+          def main(args: Array[String]): Unit = {
+            val conf = new SparkConf().setMaster("local[2]").setAppName("NetworkWordCount")
+            val ssc = new StreamingContext(conf,Seconds(5))
