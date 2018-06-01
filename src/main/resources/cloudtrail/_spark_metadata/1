@@ -1,0 +1,3 @@
+v1
+{"path":"file:///E:/spark/spark23/src/main/resources/cloudtrail/date=2018-01-01/part-00000-5811f583-7e44-4c9c-a379-332a7f60760d.c000.snappy.parquet","size":970,"isDir":false,"modificationTime":1527841784614,"blockReplication":1,"blockSize":33554432,"action":"add"}
+{"path":"file:///E:/spark/spark23/src/main/resources/cloudtrail/date=2018-01-06/part-00000-61c3766e-a622-4771-966d-f8f7193054e3.c000.snappy.parquet","size":970,"isDir":false,"modificationTime":1527841785129,"blockReplication":1,"blockSize":33554432,"action":"add"}
