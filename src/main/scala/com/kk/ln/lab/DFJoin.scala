@@ -1,10 +1,14 @@
 package com.kk.ln.lab
 
+import java.sql.Timestamp
+import java.sql.Date
+import java.text.SimpleDateFormat
+
 import org.apache.spark.sql.SparkSession
 
 
 /**
-  * Created by kevin on 25/5/18.
+  * Created by kevin on 24/5/18.
   */
 object DFJoin {
 
@@ -47,25 +51,21 @@ object DFJoin {
 
 
     val cycleDF = spark.createDataFrame(cycleList)
-    println("充电循环数据")
-    cycleDF.show()
-
     cycleDF.createOrReplaceTempView("cycle")
     val sqlCycleDF = spark.sql("SELECT max(cycleNo) as maxCycleNo,imei FROM cycle GROUP BY imei")
     sqlCycleDF.createOrReplaceTempView("maxCycle")
-    println("每个IMEI最大充电循环号数据")
     sqlCycleDF.show()
-
 
     val curveDF = spark.createDataFrame(curveList)
     curveDF.createOrReplaceTempView("curve")
-    println("当天充电曲线数据")
     curveDF.show()
 
 
     val sqlJoinDF = spark.sql("SELECT (IFNULL(cc.maxCycleNo,0) + cu.currentDayCycleNo) as cycleNo, cu.*   FROM curve cu LEFT JOIN maxCycle cc ON cc.imei = cu.imei")
-    println("通过SQL关联计算当天的实际充电循环号")
     sqlJoinDF.show()
+
+
+
 
 
     //cycleDF.createOrReplaceGlobalTempView("cycle")
