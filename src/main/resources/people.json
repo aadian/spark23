@@ -1,0 +1,20 @@
+{
+  "Records": [
+    {
+      "userId": "001",
+      "userName": {
+        "firstName": "Jim",
+        "lastName": "Zhang"
+      },
+      "loginTime": "2018-01-01 12:11:11"
+    },
+    {
+      "userId": "002",
+      "userName": {
+        "firstName": "Rose",
+        "lastName": "Liu"
+      },
+      "loginTime": "1527830168"
+    }
+  ]
+}
