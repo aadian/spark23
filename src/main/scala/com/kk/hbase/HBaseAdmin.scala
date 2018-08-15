@@ -37,6 +37,8 @@ object HBaseAdmin {
     //    val sparkConf = new SparkConf().setAppName("HBaseTest").setMaster("local")
     //    val sc = new SparkContext(sparkConf)
 
+
+
     //createTable("ly_test","c")
 
 
@@ -45,9 +47,9 @@ object HBaseAdmin {
 
     //    new ThreadReadHbase().start()
     //
-//    new ThreadReadHbase().start()
+//    new ThreadWriteHbase().start()
 //    new ThreadGetAdminInfo().start()
-//    new ThreadReadFile().start()
+
 
     getHBaseConf
 
@@ -66,28 +68,41 @@ object HBaseAdmin {
     println("hello hbase")
   }
 
+  /**
+    * 获取hbase的配置
+     */
   def getHBaseConf(): Unit = {
     val connection = ConnectionFactory.createConnection(conf);
     val hbaseConf = connection.getConfiguration
-    println(hbaseConf.getStrings("hbase.hregion.memstore.flush.size")(0))
-    println(hbaseConf.getStrings("hbase.hregion.max.filesize")(0))
-    println(hbaseConf.getStrings("hbase.regionserver.msginterval")(0))
-    println(hbaseConf.getStrings("hbase.master.info.port")(0))
-    println(hbaseConf.getStrings("hbase.regionserver.region.split.policy")(0))
-    println(hbaseConf.getStrings("hbase.hregion.memstore.block.multiplier")(0))
-    println(hbaseConf.getStrings("hbase.regionserver.global.memstore.upperLimit")(0))
-    println(hbaseConf.getStrings("hbase.hregion.memstore.block.multiplier")(0))
+    println(hbaseConf.getStrings("hbase.hregion.memstore.flush.size")(0)) //134217728
+    println(hbaseConf.getStrings("hbase.hregion.max.filesize")(0)) //10737418240
+    println(hbaseConf.getStrings("hbase.regionserver.msginterval")(0)) //3000
+    println(hbaseConf.getStrings("hbase.master.info.port")(0)) //16010
+    println(hbaseConf.getStrings("hbase.regionserver.region.split.policy")(0)) //IncreasingToUpperBoundRegionSplitPolicy
+    println(hbaseConf.getStrings("hbase.hregion.memstore.block.multiplier")(0)) //4
+    println(hbaseConf.getStrings("hbase.hregion.memstore.flush.size")(0)) //4
+
+    val tableDesc = new HTableDescriptor(TableName.valueOf("t3"));
+    println("getMemStoreFlushSize:" + tableDesc.getMemStoreFlushSize)
 
 
+
+    //println(hbaseConf.getStrings("hbase.regionserver.global.memstore.upperLimit")(0))
+    //    println(hbaseConf.getStrings("hbase.hstore.compaction.min.size")(0))
+    //    println(hbaseConf.getStrings("hbase.hregion.max.filesize")(0))
+
+    //println(hbaseConf.getStrings("hbase.hstore.compaction.ratio")(0)) //10
+    //println(hbaseConf.getStrings("hbase.increasing.policy.initial.size")(0)) //100
 
 
   }
 
-  def readHFileInfo(): Unit = {
 
-  }
-
-
+  /**
+    * 创建表，和列族，并设置表的Split Policy
+    * @param tablename
+    * @param columnFamily
+    */
   def createTable(tablename: String, columnFamily: String): Unit = {
 
     val connection = ConnectionFactory.createConnection(conf);
@@ -100,6 +115,7 @@ object HBaseAdmin {
     } else {
       val tableDesc = new HTableDescriptor(TableName.valueOf(tablename));
       tableDesc.addFamily(new HColumnDescriptor(columnFamily));
+      //tableDesc.setValue(HTableDescriptor.SPLIT_POLICY, "org.apache.hadoop.hbase.regionserver.ConstantSizeRegionSplitPolicy")
       admin.createTable(tableDesc);
       println("create table success!");
     }
@@ -145,6 +161,7 @@ object HBaseAdmin {
         if (tableName.equalsIgnoreCase("ly_test")) {
           //println("tableName:" + tableName)
           println(System.currentTimeMillis() + "," + regLoad.getValue.getMemStoreSizeMB())
+
           //println("region:" + Bytes.toString(regLoad.getKey))
           //          println("region mem store size:" + regLoad.getValue.getMemStoreSizeMB())
           //          println("===========================")
@@ -243,7 +260,7 @@ object HBaseAdmin {
 
 }
 
-class ThreadReadHbase() extends Thread {
+class ThreadWriteHbase() extends Thread {
   override def run() {
     HBaseAdmin.addRecord()
   }
@@ -259,7 +276,7 @@ class ThreadReadFile extends Thread {
 
 
   override def run(): Unit = {
-    val dirname = "E:\\spark\\hbase-1.2.6\\store\\data\\default\\ly_test\\8d88c77a36223e23d8c4535daec73bda\\c"
+    val dirname = "E:\\spark\\hbase-1.2.6\\store\\data\\default\\ly_test\\569ab525fd5591151801895106c431f6\\c"
     val dir = new File(dirname)
 
     while (true) {
@@ -270,9 +287,9 @@ class ThreadReadFile extends Thread {
         var fileSize: Long = 0
         while (fileIter.hasNext) {
           val file = fileIter.next()
-          println(file.getName + "," + file.length().toLong/(1024*1024))
+          println(file.getName + "," + file.length().toLong / (1024 * 1024))
           fileNum += 1
-          fileSize += file.length().toLong/(1024*1024)
+          fileSize += file.length().toLong / (1024 * 1024)
           //println("file Name:" + file.getName + ":" + file.length())
         }
         val currentTime = System.currentTimeMillis()
@@ -318,7 +335,9 @@ class ThreadGetAdminInfo extends Thread {
           val regLoad = regLoadIt.next()
           val tableName = Bytes.toString(regLoad.getKey).split(",")(0)
           if (tableName.equalsIgnoreCase("ly_test")) {
-            println("MemStoreSize," + System.currentTimeMillis() + "," + regLoad.getValue.getMemStoreSizeMB())
+            val regionName = Bytes.toString(regLoad.getKey).split("\\.")(1)
+            println("RegionName:"+ regionName + "," + System.currentTimeMillis() + ",MemStoreSize:" + regLoad.getValue.getMemStoreSizeMB())
+            getRegionFileInfo(regionName)
           }
         }
 
@@ -329,6 +348,34 @@ class ThreadGetAdminInfo extends Thread {
     }
 
 
+  }
+
+  def getRegionFileInfo(regionName: String): Unit = {
+    val dirname = "E:\\spark\\hbase-1.2.6\\store\\data\\default\\ly_test\\" + regionName + "\\c"
+    val dir = new File(dirname)
+
+    try {
+      val fileIter = subDir(dir)
+      var fileNum = 0
+      var fileTotalSize: Long = 0
+      while (fileIter.hasNext) {
+        val file = fileIter.next()
+        println("RegionName:"+ regionName + "," + System.currentTimeMillis() + ",FileName:" + file.getName + ",FileSize:" + file.length().toLong / (1024 * 1024))
+        fileNum += 1
+        fileTotalSize += file.length().toLong / (1024 * 1024)
+      }
+      println("RegionName:"+ regionName + "," + System.currentTimeMillis() + ",FileNum:" + fileNum)
+      println("RegionName:"+ regionName + "," + System.currentTimeMillis() + ",FileTotalSize:" + fileTotalSize)
+    } catch {
+      case e: Exception => println(e.toString)
+    }
+  }
+
+
+  def subDir(dir: File): Iterator[File] = {
+    val dirs = dir.listFiles().filter(_.isDirectory())
+    val files = dir.listFiles().filter(_.isFile())
+    files.toIterator ++ dirs.toIterator.flatMap(subDir _)
   }
 
 
