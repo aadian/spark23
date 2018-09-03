@@ -1,7 +1,6 @@
 package com.kk.ln.lab
 
 
-import com.kk.ln.lab.WindowFun.battery_data
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions._
@@ -20,8 +19,6 @@ object WindowFun {
       .appName("Study Window Function")
       .getOrCreate()
 
-    import spark.implicits._
-
     val window = Window.partitionBy("imei").orderBy("timeIn")
 
     spark.sparkContext.setLogLevel("WARN")
@@ -39,6 +36,8 @@ object WindowFun {
     )
 
     val batteryDF = spark.createDataFrame(batteryList)
+
+    batteryDF.show()
 
     batteryDF.createOrReplaceTempView("battery")
 
