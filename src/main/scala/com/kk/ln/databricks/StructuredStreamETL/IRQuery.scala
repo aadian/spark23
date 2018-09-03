@@ -2,7 +2,7 @@ package com.kk.ln.databricks.StructuredStreamETL
 
 import org.apache.spark.sql.SparkSession
 
-object Query {
+object IRQuery {
 
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder().master("local[2]").appName("ETL").getOrCreate()
