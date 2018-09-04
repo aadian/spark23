@@ -8,6 +8,10 @@
     <artifactId>bigDataLab</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <scala.version>2.11.8</scala.version>
+    </properties>
+
     <dependencies>
 
         <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-core -->
@@ -72,12 +76,6 @@
             <version>1.1.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-
 
         <dependency>
             <groupId>org.apache.hbase</groupId>
@@ -93,32 +91,121 @@
             <version>2.6.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
 
 
     </dependencies>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <mainClass>com.kk.hbase.HBaseAdmin</mainClass>
-                            </manifest>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>scala-tools.org</id>
+            <name>Scala-Tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases</url>
+        </pluginRepository>
+    </pluginRepositories>
 
-                        </archive>
-                        <!--<includes>-->
-                            <!--<include>com/kk/**</include>-->
-                        <!--</includes>-->
-                        <!--<classesDirectory>./target/classes</classesDirectory>-->
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+    <build>
+        <sourceDirectory>src/main/scala</sourceDirectory>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.1.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <scalaCompatVersion>2.11</scalaCompatVersion>
+                    <scalaVersion>${scala.version}</scalaVersion>
+                </configuration>
+                <!-- other settings-->
+            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.scala-tools</groupId>-->
+                <!--<artifactId>maven-scala-plugin</artifactId>-->
+                <!--<version>3.1.6</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>compile</goal>-->
+                            <!--<goal>testCompile</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<scalaCompatVersion>2.10</scalaCompatVersion>-->
+                    <!--<scalaVersion>${scala.version}</scalaVersion>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+
+                    <!--这部分可有可无,加上的话则直接生成可运行jar包-->
+                    <!--<archive>-->
+                    <!--<manifest>-->
+                    <!--<mainClass>${exec.mainClass}</mainClass>-->
+                    <!--</manifest>-->
+                    <!--</archive>-->
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
+
+    <!--<build>-->
+        <!--<sourceDirectory>src/main/scala</sourceDirectory>-->
+        <!--<pluginManagement>-->
+            <!--<plugins>-->
+
+                <!--<plugin>-->
+                    <!--<groupId>org.scala-tools</groupId>-->
+                    <!--<artifactId>maven-scala-plugin</artifactId>-->
+                    <!--<executions>-->
+                        <!--<execution>-->
+                            <!--<goals>-->
+                                <!--<goal>compile</goal>-->
+                                <!--<goal>testCompile</goal>-->
+                            <!--</goals>-->
+                        <!--</execution>-->
+                    <!--</executions>-->
+                    <!--<configuration>-->
+                        <!--<scalaVersion>${scala.version}</scalaVersion>-->
+                    <!--</configuration>-->
+                <!--</plugin>-->
+
+                <!--&lt;!&ndash;&ndash;&gt;-->
+                <!--&lt;!&ndash;<plugin>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<groupId>org.apache.maven.plugins</groupId>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<artifactId>maven-jar-plugin</artifactId>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<configuration>&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<archive>&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<manifest>&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<mainClass>com.kk.hbase.HBaseAdmin</mainClass>&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</manifest>&ndash;&gt;&ndash;&gt;-->
+
+                        <!--&lt;!&ndash;&lt;!&ndash;</archive>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<includes>&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<include>**</include>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</includes>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<classesDirectory>./target</classesDirectory>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;</configuration>&ndash;&gt;-->
+                <!--&lt;!&ndash;</plugin>&ndash;&gt;-->
+            <!--</plugins>-->
+        <!--</pluginManagement>-->
+    <!--</build>-->
 
 
 </project>
