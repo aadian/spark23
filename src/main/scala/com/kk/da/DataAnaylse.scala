@@ -18,20 +18,20 @@ object DataAnaylse {
     sc.setLogLevel("WARN")
     val rawblocks = sc.textFile("/Develop/projects/spark23/src/main/resources/linkage/block_1.csv")
 
-    println(rawblocks.getClass.getTypeName)
+    //println(rawblocks.getClass.getTypeName)
     """
       |org.apache.spark.rdd.MapPartitionsRDD
     """.stripMargin
 
 
     val first = rawblocks.first()
-    println(first.getClass.getTypeName)
+    //println(first.getClass.getTypeName)
     """
       |java.lang.String
     """.stripMargin
 
     val head = rawblocks.take(10)
-    println(head.getClass.getTypeName)
+    //println(head.getClass.getTypeName)
     """
       |java.lang.String[]
     """.stripMargin
@@ -42,13 +42,13 @@ object DataAnaylse {
       |"id_1","id_2","cmp_fname_c1","cmp_fname_c2","cmp_lname_c1","cmp_lname_c2","cmp_sex","cmp_bd","cmp_bm","cmp_by","cmp_plz","is_match"
     """.stripMargin
 
-    println(head.filterNot(isHead).length)
+    //println(head.filterNot(isHead).length)
     """
       |9
     """.stripMargin
 
     val lines = head.filter(!isHead(_))
-    println(lines.length)
+    //println(lines.length)
     """
       |9
     """.stripMargin
@@ -58,7 +58,7 @@ object DataAnaylse {
     val noheader = rawblocks.filter(x => !isHead(x))
     val parsed = noheader.map(line => parse(line))
     println(mds.length)
-    println(parsed.getClass.getTypeName)
+    //println(parsed.getClass.getTypeName)
 
     /**
       * 聚集,在聚集前过滤掉经可能多的数据，尽快得到答案

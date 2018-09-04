@@ -1,7 +1,6 @@
 package com.kk.ln.office.streaming
 
 import org.apache.spark.sql.SparkSession
-import java.sql.Timestamp
 
 /**
   * Created by leiying on 2018/5/23.
@@ -21,13 +20,13 @@ object StructuredStream {
       .option("port", 9999)
       .load()
 
-    println(lines.getClass.getTypeName)
+    //println(lines.getClass.getTypeName)
 
     val words = lines.as[String].flatMap(_.split(" "))
-    println(words.getClass.getTypeName)
+    //println(words.getClass.getTypeName)
 
     val wordCounts = words.groupBy("value").count()
-    println(wordCounts.getClass.getTypeName)
+    //println(wordCounts.getClass.getTypeName)
 
     val query = words.writeStream
       .outputMode("update")

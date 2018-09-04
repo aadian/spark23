@@ -111,7 +111,7 @@ private object ParallelCollectionRDD {
   /**
    * Slice a collection into numSlices sub-collections. One extra thing we do here is to treat Range
    * collections specially, encoding the slices as other Ranges to minimize memory cost. This makes
-   * it efficient to run Spark over RDDs representing large sets of numbers. And if the collection
+   * it efficient to run Spark over RDDs representing largemems sets of numbers. And if the collection
    * is an inclusive Range, we use inclusive range for the last slice.
    */
   def slice[T: ClassTag](seq: Seq[T], numSlices: Int): Seq[Seq[T]] = {

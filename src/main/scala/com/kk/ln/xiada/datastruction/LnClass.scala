@@ -227,7 +227,7 @@ object PatternsMatching {
       |Some(5)
     """.stripMargin
     val sparkBook = books.get("hive")
-    println(sparkBook.getClass.getTypeName)
+    //println(sparkBook.getClass.getTypeName)
     """
       |scala.None$
     """.stripMargin
