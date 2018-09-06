@@ -11,6 +11,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="spark23" target="1.5" />
+      <module name="springclouddemo" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -92,7 +92,7 @@ class ThreadGetTableInfo(uri:String, tableNameDir: String, outputBasePath: Strin
 
       }
 
-      Thread.sleep(500)
+      Thread.sleep(1000)
     }
 
 
@@ -104,19 +104,19 @@ class ThreadGetTableInfo(uri:String, tableNameDir: String, outputBasePath: Strin
     * @param regionName
     * @param memStoreSize
     */
-  def logMemSize(regionName: String, memStoreSize: Long): Unit = {
+  def logMemSize(regionName: String, memStoreSize: Int): Unit = {
     val stringArr = Arrays.asList("MemStoreSize", regionName)
     val actualFileName = StringUtils.join(stringArr.toArray, '_')
     println("actualFileName:" + actualFileName)
     if (fileMap.containsKey(actualFileName)) {
       val out = fileMap.get(actualFileName)
-      out.write("[" + System.currentTimeMillis() + "," + memStoreSize / (1024 * 1024) + "],\n")
+      out.write("[" + System.currentTimeMillis() + "," + memStoreSize + "],\n")
       out.flush()
     } else {
       val out = new FileWriter(outputBasePath + actualFileName , true)
       //val fileName = actualFileName
       fileMap.put(actualFileName, out)
-      out.write("[" + System.currentTimeMillis() + "," + memStoreSize / (1024 * 1024) + "],\n")
+      out.write("[" + System.currentTimeMillis() + "," + memStoreSize + "],\n")
       out.flush()
     }
   }
@@ -146,8 +146,6 @@ class ThreadGetTableInfo(uri:String, tableNameDir: String, outputBasePath: Strin
 
       val out = new FileWriter(outputBasePath + actualFileName , true)
       val fileName = actualFileName
-      //fileMap += (actualFileName -> out)
-      //fileMap += (actualFileName -> fileName)
       fileMap.put(actualFileName, out)
       out.write("[" + System.currentTimeMillis() + "," + fileSize / (1024 * 1024) + "],\n")
       out.flush()
